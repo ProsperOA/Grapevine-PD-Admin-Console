@@ -1,13 +1,23 @@
 import * as React from 'react';
+import {
+  Redirect,
+  Route,
+  RouteComponentProps,
+  Switch,
+  withRouter
+} from 'react-router-dom';
 
-class App extends React.Component<{}, {}> {
-  public render() {
+import Auth from './containers/auth/auth.container';
+
+class App extends React.Component<RouteComponentProps<{}>, {}> {
+  public render(): JSX.Element {
     return (
-      <div>
-        <p>Grapevine PD Admin Console</p>
-      </div>
+      <Switch>
+        <Route path="/" exact={true} component={Auth} />
+        <Redirect to="/" />
+      </Switch>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
