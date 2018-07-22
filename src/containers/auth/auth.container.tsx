@@ -5,20 +5,34 @@ import {
   Button,
   Form,
   Icon,
-  Input
+  Input,
+  notification
 } from 'antd';
 import { FormComponentProps } from 'antd/lib/form/Form';
 
 import * as actions from '../../store/actions';
+import { AppState } from '../../store/reducers';
 
 interface AuthProps extends FormComponentProps {
+  error: string;
   login: (email: string, password: string) => Dispatch<actions.AuthAction>
 }
 
 const FormItem = Form.Item;
 
 class Auth extends React.Component<AuthProps, {}> {
-  public handleSubmit = (e: any) => {
+  public componentWillReceiveProps(nextProps: AuthProps): void {
+    const { error } = nextProps;
+    if (error) {
+      notification.error({
+        message: 'An error occurred',
+        description: error,
+        duration: 2
+      });
+    }
+  }
+
+  public handleSubmit = (e: any): void => {
     e.preventDefault();
 
     this.props.form.validateFields((err, values) => {
@@ -62,8 +76,10 @@ class Auth extends React.Component<AuthProps, {}> {
   }
 }
 
+const mapStateTopProps = ({ auth }: AppState) => ({ error: auth.error });
+
 const mapDispatchToProps = (dispatch: Dispatch<actions.AuthAction>) => ({
   login: (email: string, password: string) => dispatch(actions.login(email, password))
 });
 
-export default connect(null, mapDispatchToProps)(Form.create()(Auth));
+export default connect(mapStateTopProps, mapDispatchToProps)(Form.create()(Auth));

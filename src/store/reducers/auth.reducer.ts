@@ -5,12 +5,14 @@ export interface AuthState {
   user: any;
   isAuth: boolean;
   token: string;
+  error: string;
 }
 
 const initialState: Readonly<AuthState> = {
   user: null,
   isAuth: false,
-  token: ''
+  token: '',
+  error: ''
 }
 
 export default (state: AuthState = initialState, action: AuthAction): AuthState => {
@@ -22,9 +24,10 @@ export default (state: AuthState = initialState, action: AuthAction): AuthState 
         user,
         token,
         isAuth: true,
+        error: ''
       };
     case types.LOGIN_FAILED:
-      return initialState;
+      return {...state, error: action.payload};
     default:
       return state;
   }
