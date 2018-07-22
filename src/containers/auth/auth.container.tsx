@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 import {
   Button,
   Form,
@@ -7,16 +9,24 @@ import {
 } from 'antd';
 import { FormComponentProps } from 'antd/lib/form/Form';
 
+import * as actions from '../../store/actions';
+
+interface AuthProps extends FormComponentProps {
+  login: (email: string, password: string) => Dispatch<actions.AuthAction>
+}
+
 const FormItem = Form.Item;
 
-class Auth extends React.Component<FormComponentProps, {}> {
+class Auth extends React.Component<AuthProps, {}> {
   public handleSubmit = (e: any) => {
     e.preventDefault();
 
     this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
+      if (err) return;
+
+      const { email, password } = values;
+
+      this.props.login(email, password);
     });
   };
 
@@ -52,4 +62,8 @@ class Auth extends React.Component<FormComponentProps, {}> {
   }
 }
 
-export default Form.create()(Auth);
+const mapDispatchToProps = (dispatch: Dispatch<actions.AuthAction>) => ({
+  login: (email: string, password: string) => dispatch(actions.login(email, password))
+});
+
+export default connect(null, mapDispatchToProps)(Form.create()(Auth));
