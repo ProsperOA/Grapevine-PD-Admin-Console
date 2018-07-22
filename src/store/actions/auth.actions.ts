@@ -1,8 +1,9 @@
 import { ActionCreator, Dispatch } from 'redux';
+import { AxiosResponse, AxiosError } from 'axios';
 import axios from '../../shared/axios';
 
 import * as types from './types';
-import { AxiosResponse, AxiosError } from '../../../node_modules/axios';
+import authTokenService from '../../shared/services/auth-token.service';
 
 export interface ILoginSuccess {
   type: types.LOGIN_SUCCESS;
