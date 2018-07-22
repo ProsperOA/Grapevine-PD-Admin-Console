@@ -23,7 +23,7 @@ const FormItem = Form.Item;
 class Auth extends React.Component<AuthProps, {}> {
   public componentWillReceiveProps(nextProps: AuthProps): void {
     const { error } = nextProps;
-    if (error) {
+    if (error && error !== this.props.error) {
       notification.error({
         message: 'An error occurred',
         description: error,
