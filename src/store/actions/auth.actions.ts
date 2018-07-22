@@ -35,7 +35,10 @@ export const login = (email: string, password: string): any =>
   (dispatch: Dispatch<AuthAction>): void => {
     axios.post('/login', {email, password})
       .then(({ data: { data }}: AxiosResponse) => {
-        dispatch(loginSuccess(data.user, data.auth_token))
+        const { user, auth_token } = data;
+
+        authTokenService.store(auth_token);
+        dispatch(loginSuccess(user, auth_token));
       })
       .catch(({ response }: AxiosError) => {
         dispatch(loginFailed(response ? response.data.message : 'unable to login'));
