@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
 import {
   Button,
   Form,
@@ -12,15 +13,29 @@ import { FormComponentProps } from 'antd/lib/form/Form';
 
 import * as actions from '../../store/actions';
 import { AppState } from '../../store/reducers';
+import authTokenService from '../../shared/services/auth-token.service';
+import axios from '../../shared/axios';
 
-interface AuthProps extends FormComponentProps {
+interface AuthProps extends FormComponentProps, RouteComponentProps<{}> {
+  isAuth: boolean;
   error: string;
-  login: (email: string, password: string) => Dispatch<actions.AuthAction>
+  login: (email: string, password: string) => Dispatch<actions.AuthAction>;
+  loginWithToken: (userID: string) => Dispatch<actions.AuthAction>;
 }
 
 const FormItem = Form.Item;
 
 class Auth extends React.Component<AuthProps, {}> {
+  public componentWillMount(): void {
+    const authToken = authTokenService.retrieve();
+    if (authToken) {
+      const [userID, token] = authToken.split('-');
+      axios.defaults.headers = {Authorization: 'Bearer ' + token};
+
+      this.props.loginWithToken(userID);
+    }
+  }
+
   public componentWillReceiveProps(nextProps: AuthProps): void {
     const { error } = nextProps;
     if (error && error !== this.props.error) {
@@ -30,6 +45,10 @@ class Auth extends React.Component<AuthProps, {}> {
         duration: 2
       });
     }
+  }
+
+  public componentDidUpdate(): void {
+    if (this.props.isAuth) this.props.history.replace('/dashboard');
   }
 
   public handleSubmit = (e: any): void => {
@@ -76,10 +95,14 @@ class Auth extends React.Component<AuthProps, {}> {
   }
 }
 
-const mapStateTopProps = ({ auth }: AppState) => ({ error: auth.error });
+const mapStateTopProps = ({ auth }: AppState) => ({
+  isAuth: auth.isAuth,
+  error: auth.error
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.AuthAction>) => ({
-  login: (email: string, password: string) => dispatch(actions.login(email, password))
+  login: (email: string, password: string) => dispatch(actions.login(email, password)),
+  loginWithToken: (userID: string) => dispatch(actions.loginWithToken(userID))
 });
 
 export default connect(mapStateTopProps, mapDispatchToProps)(Form.create()(Auth));
