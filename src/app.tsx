@@ -2,24 +2,22 @@ import * as React from 'react';
 import {
   Redirect,
   Route,
-  RouteComponentProps,
   Switch,
-  withRouter
 } from 'react-router-dom';
 
 import Auth from './containers/auth/auth.container';
-import Dashboard from './containers/dashboard/dashboard.container';
+import Console from './containers/console/console.container';
 
-class App extends React.Component<RouteComponentProps<{}>, {}> {
+class App extends React.Component<{}, {}> {
   public render(): JSX.Element {
     return (
       <Switch>
         <Route path="/" exact={true} component={Auth} />
-        <Route path="/dashboard" exact={true} component={Dashboard} />
+        <Route path="/console" component={Console} />
         <Redirect to="/" />
       </Switch>
     );
   }
 }
 
-export default withRouter(App);
+export default App;
