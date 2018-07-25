@@ -48,7 +48,7 @@ class Auth extends React.Component<AuthProps, {}> {
   }
 
   public componentDidUpdate(): void {
-    if (this.props.isAuth) this.props.history.replace('/dashboard');
+    if (this.props.isAuth) this.props.history.replace('/console/dashboard');
   }
 
   public handleSubmit = (e: any): void => {
