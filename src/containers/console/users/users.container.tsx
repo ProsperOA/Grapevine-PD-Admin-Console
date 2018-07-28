@@ -34,19 +34,23 @@ class Users extends React.Component<any, any> {
 
       firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(() => {
+          /* tslint:disable:no-string-literal */
           notification['success']({
             message: 'User Account Created',
             description: `A user account has been successfully created with email
               address: ${email}`,
             duration: 2.5
           });
+          /* tslint:enable:no-string-literal */
         })
         .catch(({ message }: firebase.FirebaseError) => {
+          /* tslint:disable:no-string-literal */
           notification['error']({
             message: 'Account Creation Failed',
             description: message,
             duration: 2.5
           });
+          /* tslint:enable:no-string-literal */
         });
     });
   };

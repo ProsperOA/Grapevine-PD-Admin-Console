@@ -5,8 +5,8 @@ import {
   Switch,
 } from 'react-router-dom';
 
-// FIXME: add tslint rule for disabling unused import
-import firebase from './firebase'; firebase
+// @ts-ignore
+import firebase from './firebase';
 import Auth from './containers/auth/auth.container';
 import Console from './containers/console/console.container';
 
