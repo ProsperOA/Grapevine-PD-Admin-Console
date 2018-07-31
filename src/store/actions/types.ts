@@ -3,3 +3,12 @@ export type LOGIN_SUCCESS = typeof LOGIN_SUCCESS;
 
 export const LOGIN_FAILED = 'LOGIN_FAILED';
 export type LOGIN_FAILED = typeof LOGIN_FAILED;
+
+export const GET_USERS_START = 'GET_USERS_START';
+export type GET_USERS_START = typeof GET_USERS_START;
+
+export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
+export type GET_USERS_SUCCESS = typeof GET_USERS_SUCCESS;
+
+export const GET_USERS_FAILED = 'GET_USERS_FAILED';
+export type GET_USERS_FAILED = typeof GET_USERS_FAILED;
