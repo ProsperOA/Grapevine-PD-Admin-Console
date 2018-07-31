@@ -33,7 +33,13 @@ const loginFailed: ActionCreator<ILoginFailed> =
 
 export const login = (email: string, password: string): any =>
   (dispatch: Dispatch<AuthAction>): void => {
-    axios.post('/login', {email, password})
+    const body = {
+      email,
+      password,
+      auth_type: 'admin'
+    };
+
+    axios.post('/login', body)
       .then(({ data: { data }}: AxiosResponse) => {
         const { user, auth_token } = data;
 
