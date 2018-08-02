@@ -27,18 +27,20 @@ class Console extends React.Component<{}, AppLayoutState> {
         <Layout style={{ minHeight: '100vh' }}>
           <Layout.Sider
             collapsible={true}
-            collapsed={this.state.sidebarCollapsed}>
-            <div className="logo" />
+            collapsed={this.state.sidebarCollapsed}
+            onCollapse={() => this.setState({ sidebarCollapsed: !this.state.sidebarCollapsed })}>
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
               <Menu.Item key="1">
-                <Icon type="pie-chart" />
-                {/* FIXME: custom styles not working */}
-                <Link to="/console/dashboard">Dashboard</Link>
+                <Link to="/console/dashboard">
+                  <Icon type="pie-chart" />
+                  <span>Dashboard</span>
+                </Link>
               </Menu.Item>
               <Menu.Item key="2">
-                <Icon type="team" />
-                {/* FIXME: custom styles not working */}
-                <Link to="/console/users">Users</Link>
+                <Link to="/console/users">
+                  <Icon type="team" />
+                  <span>Users</span>
+                </Link>
               </Menu.Item>
             </Menu>
           </Layout.Sider>
