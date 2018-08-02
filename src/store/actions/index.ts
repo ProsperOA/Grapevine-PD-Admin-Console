@@ -11,6 +11,9 @@ export {
   UsersAction,
   IGetUsersSuccess,
   IGetUsersFailed,
+  ICreateUserSuccess,
+  ICreateUserFailed,
 
-  getUsers
+  getUsers,
+  createUser
 } from './users.actions';

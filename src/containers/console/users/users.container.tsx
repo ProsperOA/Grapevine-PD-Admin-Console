@@ -8,7 +8,6 @@ import {
 } from 'antd';
 
 import * as actions from '../../../store/actions';
-import firebase from '../../../firebase';
 import AddNewUserModal from './new-user/new-user.modal';
 import UsersTable from './users-table-component';
 import { AppState } from '../../../store/reducers';
@@ -16,12 +15,12 @@ import { Dispatch } from '../../../../node_modules/redux';
 import { randStr } from '../../../shared/utils';
 
 interface UsersProps {
+  currentUser: any;
   users: any[];
   loading: boolean;
   error: string;
-  getUsers: (pageSize?: number, pageIndex?: number) => (
-    Dispatch<actions.IGetUsersSuccess | actions.IGetUsersFailed>
-  );
+  createUser: (user: any, emailCredentials: boolean) => Dispatch<actions.UsersAction>;
+  getUsers: (pageSize?: number, pageIndex?: number) => Dispatch<actions.UsersAction>;
 }
 
 interface UsersState {
@@ -61,29 +60,19 @@ class Users extends React.Component<UsersProps, UsersState> {
       form.resetFields();
       this.setState({ newUserModalOpen: false });
 
-      const { email, passwordLength } = values;
-      const password = randStr(passwordLength);
+      const { currentUser } = this.props;
+      const { firstName, lastName, email, passwordLength, emailCredentials } = values;
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          /* tslint:disable:no-string-literal */
-          notification['success']({
-            message: 'User Account Created',
-            description: `A user account has been successfully created with email
-              address: ${email}`,
-            duration: 2.5
-          });
-          /* tslint:enable:no-string-literal */
-        })
-        .catch(({ message }: firebase.FirebaseError) => {
-          /* tslint:disable:no-string-literal */
-          notification['error']({
-            message: 'Account Creation Failed',
-            description: message,
-            duration: 2.5
-          });
-          /* tslint:enable:no-string-literal */
-        });
+      const password = randStr(passwordLength);
+      const user = {
+        firstName,
+        lastName,
+        email,
+        password,
+        createdBy: `${currentUser.first_name} ${currentUser.last_name}`
+      };
+
+      this.props.createUser(user, emailCredentials);
     });
   };
 
@@ -129,9 +118,15 @@ class Users extends React.Component<UsersProps, UsersState> {
   }
 }
 
-const mapStateToProps = ({ users }: AppState) => ({ ...users });
+const mapStateToProps = ({ users, auth }: AppState) => ({
+  currentUser: auth.user,
+  ...users
+});
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.IGetUsersSuccess | actions.IGetUsersFailed>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<actions.UsersAction>) => ({
+  createUser: (user: any, emailCredentials: boolean) => (
+    dispatch(actions.createUser(user, emailCredentials))
+  ),
   getUsers: (pageSize?: number, pageIndex?: number) => (
     dispatch(actions.getUsers(pageSize, pageIndex))
   )

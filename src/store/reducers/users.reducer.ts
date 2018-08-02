@@ -17,7 +17,7 @@ const initialState: Readonly<UsersState> = {
 
 export default (state: UsersState = initialState, action: UsersAction): UsersState => {
   switch (action.type) {
-    case types.GET_USERS_START:
+    case types.USERS_LOADING_START:
       return {...state, loading: true};
     case types.GET_USERS_SUCCESS:
       return {
@@ -27,6 +27,15 @@ export default (state: UsersState = initialState, action: UsersAction): UsersSta
         error: ''
       };
     case types.GET_USERS_FAILED:
+      return {...state, loading: false, error: action.payload};
+    case types.CREATE_USER_SUCCESS:
+      return {
+        ...state,
+        users: [action.payload, ...state.users],
+        loading: false,
+        error: ''
+      };
+    case types.CREATE_USER_FAILED:
       return {...state, loading: false, error: action.payload};
     default:
       return state;

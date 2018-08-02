@@ -5,8 +5,8 @@ import axios from '../../shared/axios';
 
 import * as types from './types';
 
-export interface IGetUsersStart {
-  type: types.GET_USERS_START
+export interface IUsersLoadingStart {
+  type: types.USERS_LOADING_START
 }
 
 export interface IGetUsersSuccess {
@@ -19,14 +19,26 @@ export interface IGetUsersFailed {
   payload: string;
 }
 
-export type UsersAction =
-  | IGetUsersStart
-  | IGetUsersSuccess
-  | IGetUsersFailed;
+export interface ICreateUserSuccess {
+  type: types.CREATE_USER_SUCCESS,
+  payload: any;
+}
 
-const getUsersStart: ActionCreator<IGetUsersStart> =
-  (): IGetUsersStart => ({
-    type: types.GET_USERS_START
+export interface ICreateUserFailed{
+  type: types.CREATE_USER_FAILED,
+  payload: string;
+}
+
+export type UsersAction =
+  | IUsersLoadingStart
+  | IGetUsersSuccess
+  | IGetUsersFailed
+  | ICreateUserSuccess
+  | ICreateUserFailed;
+
+const usersLoadingStart: ActionCreator<IUsersLoadingStart> =
+  (): IUsersLoadingStart => ({
+    type: types.USERS_LOADING_START
 });
 
 const getUsersSuccess: ActionCreator<IGetUsersSuccess> =
@@ -41,9 +53,21 @@ const getUsersFailed: ActionCreator<IGetUsersFailed> =
     payload: error
 });
 
+const createUserSuccess: ActionCreator<ICreateUserSuccess> =
+  (user: any): ICreateUserSuccess => ({
+    type: types.CREATE_USER_SUCCESS,
+    payload: user
+});
+
+const createUserFailed: ActionCreator<ICreateUserFailed> =
+  (error: string): ICreateUserFailed => ({
+    type: types.CREATE_USER_FAILED,
+    payload: error
+});
+
 export const getUsers = (pageSize: number = 30, pageIndex: number = 0): any =>
   (dispatch: Dispatch<UsersAction>): void => {
-    dispatch(getUsersStart());
+    dispatch(usersLoadingStart());
     const params = {
       page_size: pageSize,
       page_index: pageIndex
@@ -55,5 +79,25 @@ export const getUsers = (pageSize: number = 30, pageIndex: number = 0): any =>
       })
       .catch(({ response }: AxiosError) => {
         dispatch(getUsersFailed(response ? response.data.message : 'unable to get users'));
+      });
+};
+
+export const createUser = (user: any, emailCredentials: boolean): any =>
+  (dispatch: Dispatch<UsersAction>): void => {
+    dispatch(usersLoadingStart());
+
+    const { email, password } = user;
+    const body = {
+      email,
+      password,
+      first_name: user.firstName,
+      last_name: user.lastName,
+      created_by: user.createdBy
+    };
+
+    axios.post('/users/create', {...body})
+      .then(({ data: { data }}: AxiosResponse) => dispatch(createUserSuccess(data)))
+      .catch(({ response }: AxiosError) => {
+        dispatch(createUserFailed(response ? response.data.message : 'unable to create user'));
       });
 };
