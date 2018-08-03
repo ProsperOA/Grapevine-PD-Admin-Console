@@ -68,7 +68,7 @@ export default (props: UsersTableProps): JSX.Element => {
     lastName: user.last_name,
     email: user.email,
     createdBy: user.created_by,
-    createdOn: user.created_on
+    createdOn: new Date(user.created_on).toDateString()
   }));
 
   return (
