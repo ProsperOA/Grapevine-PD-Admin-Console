@@ -19,7 +19,7 @@ interface UsersProps {
   users: any[];
   loading: boolean;
   error: string;
-  createUser: (user: any, emailCredentials: boolean) => Dispatch<actions.UsersAction>;
+  createUser: (user: any) => Dispatch<actions.UsersAction>;
   getUsers: (pageSize?: number, pageIndex?: number) => Dispatch<actions.UsersAction>;
 }
 
@@ -61,7 +61,7 @@ class Users extends React.Component<UsersProps, UsersState> {
       this.setState({ newUserModalOpen: false });
 
       const { currentUser } = this.props;
-      const { firstName, lastName, email, passwordLength, emailCredentials } = values;
+      const { firstName, lastName, email, passwordLength } = values;
 
       const password = randStr(passwordLength);
       const user = {
@@ -72,7 +72,7 @@ class Users extends React.Component<UsersProps, UsersState> {
         createdBy: `${currentUser.first_name} ${currentUser.last_name}`
       };
 
-      this.props.createUser(user, emailCredentials);
+      this.props.createUser(user);
     });
   };
 
@@ -124,9 +124,7 @@ const mapStateToProps = ({ users, auth }: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.UsersAction>) => ({
-  createUser: (user: any, emailCredentials: boolean) => (
-    dispatch(actions.createUser(user, emailCredentials))
-  ),
+  createUser: (user: any) => dispatch(actions.createUser(user)),
   getUsers: (pageSize?: number, pageIndex?: number) => (
     dispatch(actions.getUsers(pageSize, pageIndex))
   )

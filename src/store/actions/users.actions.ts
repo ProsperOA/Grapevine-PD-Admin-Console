@@ -82,7 +82,7 @@ export const getUsers = (pageSize: number = 30, pageIndex: number = 0): any =>
       });
 };
 
-export const createUser = (user: any, emailCredentials: boolean): any =>
+export const createUser = (user: any): any =>
   (dispatch: Dispatch<UsersAction>): void => {
     dispatch(usersLoadingStart());
 

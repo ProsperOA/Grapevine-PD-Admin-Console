@@ -3,8 +3,7 @@ import { Modal } from 'antd';
 import {
   Form,
   Input,
-  Slider,
-  Switch
+  Slider
 } from 'antd';
 import { FormComponentProps } from 'antd/lib/form/Form';
 
@@ -63,11 +62,6 @@ class AddNewUserModal extends React.Component<AddNewUserModalProps, {}> {
               initialValue: 8
             })(
               <Slider min={6} max={50} />
-            )}
-          </Form.Item>
-          <Form.Item label="Email credentials to user?" colon={false}>
-            {getFieldDecorator('emailCredentials', { valuePropName: 'checked' })(
-              <Switch checkedChildren="Yes" unCheckedChildren="No" />
             )}
           </Form.Item>
         </Form>
