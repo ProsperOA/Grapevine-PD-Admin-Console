@@ -21,6 +21,7 @@ interface UsersProps {
   loading: boolean;
   error: string;
   createUser: (user: any) => Dispatch<actions.UsersAction>;
+  deleteUser: (userID: number) => Dispatch<actions.UsersAction>;
   getUsers: (pageSize?: number, pageIndex?: number, name?: string) => Dispatch<actions.UsersAction>;
 }
 
@@ -77,8 +78,8 @@ class Users extends React.Component<UsersProps, UsersState> {
     });
   };
 
-  public onDeleteUser = (user: any): void => {
-    console.log('deleting', user);
+  public onDeleteUser = (userID: number): void => {
+    this.props.deleteUser(userID);
   };
 
   public onSearchUsersByName = (name: string): void => {
@@ -139,6 +140,7 @@ const mapStateToProps = ({ users, auth }: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.UsersAction>) => ({
   createUser: (user: any) => dispatch(actions.createUser(user)),
+  deleteUser: (userID: number) => dispatch(actions.deleteUser(userID)),
   getUsers: (pageSize?: number, pageIndex?: number, name?: string) => (
     dispatch(actions.getUsers(pageSize, pageIndex, name))
   )

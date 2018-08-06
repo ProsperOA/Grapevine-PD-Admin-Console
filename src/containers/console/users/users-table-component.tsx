@@ -8,7 +8,7 @@ import {
 interface UsersTableProps {
   users: any[];
   loading: boolean;
-  deleteUser: (email: string) => void;
+  deleteUser: (userID: number) => void;
 }
 
 export default (props: UsersTableProps): JSX.Element => {
@@ -51,7 +51,7 @@ export default (props: UsersTableProps): JSX.Element => {
           <span>
             <Popconfirm
               title={`Are you sure you want to delete ${user.first_name} ${user.last_name}?`}
-              onConfirm={() => props.deleteUser(user)}
+              onConfirm={() => props.deleteUser(user.id)}
               okText="Yes"
               cancelText="No">
               <a>Delete</a>

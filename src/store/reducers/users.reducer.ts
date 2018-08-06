@@ -37,7 +37,20 @@ export default (state: UsersState = initialState, action: UsersAction): UsersSta
         loading: false,
         error: ''
       };
+    case types.DELETE_USER_SUCCESS:
+      const userID   = action.payload;
+      const index    = _.findIndex(state.users, user => user.id === userID);
+      const newUsers = _.cloneDeep(state.users);
+      newUsers.splice(index, 1);
+
+      return {
+        ...state,
+        users: newUsers,
+        loading: false,
+        error: ''
+      };
     case types.CREATE_USER_FAILED:
+    case types.DELETE_USER_FAILED:
       return {...state, loading: false, error: action.payload};
     default:
       return state;

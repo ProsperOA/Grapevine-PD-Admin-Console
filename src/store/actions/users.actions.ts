@@ -27,8 +27,18 @@ export interface ICreateUserSuccess {
   payload: any;
 }
 
-export interface ICreateUserFailed{
+export interface ICreateUserFailed {
   type: types.CREATE_USER_FAILED,
+  payload: string;
+}
+
+export interface IDeleteUserSuccess {
+  type: types.DELETE_USER_SUCCESS,
+  payload: number;
+}
+
+export interface IDeleteUserFailed {
+  type: types.DELETE_USER_FAILED;
   payload: string;
 }
 
@@ -37,7 +47,9 @@ export type UsersAction =
   | IGetUsersSuccess
   | IGetUsersFailed
   | ICreateUserSuccess
-  | ICreateUserFailed;
+  | ICreateUserFailed
+  | IDeleteUserSuccess
+  | IDeleteUserFailed;
 
 const usersLoadingStart: ActionCreator<IUsersLoadingStart> =
   (): IUsersLoadingStart => ({
@@ -65,6 +77,18 @@ const createUserSuccess: ActionCreator<ICreateUserSuccess> =
 const createUserFailed: ActionCreator<ICreateUserFailed> =
   (error: string): ICreateUserFailed => ({
     type: types.CREATE_USER_FAILED,
+    payload: error
+});
+
+const deleteUserSuccess: ActionCreator<IDeleteUserSuccess> =
+  (userID: number): IDeleteUserSuccess => ({
+    type: types.DELETE_USER_SUCCESS,
+    payload: userID
+});
+
+const deleteUserFailed: ActionCreator<IDeleteUserFailed> =
+  (error: string): IDeleteUserFailed => ({
+    type: types.DELETE_USER_FAILED,
     payload: error
 });
 
@@ -105,5 +129,16 @@ export const createUser = (user: any): any =>
       .then(({ data: { data }}: AxiosResponse) => dispatch(createUserSuccess(data)))
       .catch(({ response }: AxiosError) => {
         dispatch(createUserFailed(response ? response.data.message : 'unable to create user'));
+      });
+};
+
+export const deleteUser = (userID: number): any =>
+  (dispatch: Dispatch<UsersAction>): void => {
+    dispatch(usersLoadingStart());
+
+    axios.delete(`/users/${userID}`)
+      .then(() => dispatch(deleteUserSuccess(userID)))
+      .catch(({ response }: AxiosError) => {
+        dispatch(deleteUserFailed(response ? response.data.message : 'unable to delete user'));
       });
 };

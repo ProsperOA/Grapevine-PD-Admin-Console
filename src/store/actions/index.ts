@@ -13,7 +13,10 @@ export {
   IGetUsersFailed,
   ICreateUserSuccess,
   ICreateUserFailed,
+  IDeleteUserSuccess,
+  IDeleteUserFailed,
 
   getUsers,
-  createUser
+  createUser,
+  deleteUser
 } from './users.actions';
