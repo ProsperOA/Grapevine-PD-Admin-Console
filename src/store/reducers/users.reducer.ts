@@ -20,9 +20,11 @@ export default (state: UsersState = initialState, action: UsersAction): UsersSta
     case types.USERS_LOADING_START:
       return {...state, loading: true};
     case types.GET_USERS_SUCCESS:
+      const { users, clear } = action.payload;
+
       return {
         ...state,
-        users: _.uniqWith([...state.users, ...action.payload], _.isEqual),
+        users: clear ? users : _.uniqWith([...state.users, ...users], _.isEqual),
         loading: false,
         error: ''
       };

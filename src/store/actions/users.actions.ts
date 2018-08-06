@@ -11,7 +11,10 @@ export interface IUsersLoadingStart {
 
 export interface IGetUsersSuccess {
   type: types.GET_USERS_SUCCESS;
-  payload: any[];
+  payload: {
+    users: any[];
+    clear: boolean;
+  };
 }
 
 export interface IGetUsersFailed {
@@ -42,9 +45,9 @@ const usersLoadingStart: ActionCreator<IUsersLoadingStart> =
 });
 
 const getUsersSuccess: ActionCreator<IGetUsersSuccess> =
-  (users: any[]): IGetUsersSuccess => ({
+  (users: any[], clear: boolean): IGetUsersSuccess => ({
     type: types.GET_USERS_SUCCESS,
-    payload: users
+    payload: { users, clear }
 });
 
 const getUsersFailed: ActionCreator<IGetUsersFailed> =
@@ -65,17 +68,20 @@ const createUserFailed: ActionCreator<ICreateUserFailed> =
     payload: error
 });
 
-export const getUsers = (pageSize: number = 30, pageIndex: number = 0): any =>
+export const getUsers = (pageSize: number = 30, pageIndex: number = 0, name: string = ''): any =>
   (dispatch: Dispatch<UsersAction>): void => {
     dispatch(usersLoadingStart());
+
+    const clear = name !== '';
     const params = {
+      name,
       page_size: pageSize,
       page_index: pageIndex
     };
 
     axios.get('/users', {params})
       .then(({ data: { data }}: AxiosResponse) => {
-        dispatch(getUsersSuccess(data));
+        dispatch(getUsersSuccess(data, clear));
       })
       .catch(({ response }: AxiosError) => {
         dispatch(getUsersFailed(response ? response.data.message : 'unable to get users'));

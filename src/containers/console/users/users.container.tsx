@@ -9,6 +9,7 @@ import {
 
 import * as actions from '../../../store/actions';
 import AddNewUserModal from './new-user/new-user.modal';
+import SearchBar from '../../../components/search-bar.component';
 import UsersTable from './users-table-component';
 import { AppState } from '../../../store/reducers';
 import { Dispatch } from '../../../../node_modules/redux';
@@ -20,7 +21,7 @@ interface UsersProps {
   loading: boolean;
   error: string;
   createUser: (user: any) => Dispatch<actions.UsersAction>;
-  getUsers: (pageSize?: number, pageIndex?: number) => Dispatch<actions.UsersAction>;
+  getUsers: (pageSize?: number, pageIndex?: number, name?: string) => Dispatch<actions.UsersAction>;
 }
 
 interface UsersState {
@@ -80,23 +81,35 @@ class Users extends React.Component<UsersProps, UsersState> {
     console.log('deleting', user);
   };
 
+  public onSearchUsersByName = (name: string): void => {
+    this.props.getUsers(30, 0, name);
+  };
+
   public render(): JSX.Element {
     const { users } = this.props;
 
     return (
       <div>
-        <Row style={{marginBottom: 25}}>
-          <Col span={24}>
+        <Row style={{ marginBottom: 25 }}>
+          <Col span={8}>
             <Button
               type="primary"
               style={{ float: 'left' }}
               onClick={() => this.toggleNewUserModal(true)}>
               Add New User
-          </Button>
+            </Button>
+          </Col>
+          <Col span={8} style={{ textAlign: 'center' }}>
+            <SearchBar
+              placeholder="Search users"
+              size="large"
+              onSearch={this.onSearchUsersByName} />
+          </Col>
+          <Col span={8}>
             <Button
               style={{ float: 'right' }}>
               Reload
-          </Button>
+            </Button>
           </Col>
         </Row>
         <Row>
@@ -125,8 +138,8 @@ const mapStateToProps = ({ users, auth }: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.UsersAction>) => ({
   createUser: (user: any) => dispatch(actions.createUser(user)),
-  getUsers: (pageSize?: number, pageIndex?: number) => (
-    dispatch(actions.getUsers(pageSize, pageIndex))
+  getUsers: (pageSize?: number, pageIndex?: number, name?: string) => (
+    dispatch(actions.getUsers(pageSize, pageIndex, name))
   )
 });
 
