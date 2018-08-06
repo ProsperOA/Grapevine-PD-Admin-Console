@@ -107,7 +107,8 @@ class Users extends React.Component<UsersProps, UsersState> {
           </Col>
           <Col span={8}>
             <Button
-              style={{ float: 'right' }}>
+              style={{ float: 'right' }}
+              onClick={() => this.props.getUsers()}>
               Reload
             </Button>
           </Col>
